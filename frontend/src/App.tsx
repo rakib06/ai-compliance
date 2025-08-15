@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
 import Upload from './components/Upload'
 import Cases from './components/Cases'
+import { Container, Divider, Typography } from '@mui/material'
 
 export default function App() {
   const [refresh, setRefresh] = useState(0)
   return (
-    <main style={{ fontFamily: 'sans-serif', padding: 24, maxWidth: 960, margin: '0 auto' }}>
-      <h1>AI Compliance Dashboard</h1>
+    <Container sx={{ py: 3 }}>
+      <Typography variant="h4" component="h1" gutterBottom>AI Compliance Dashboard</Typography>
       <Upload onUploaded={() => setRefresh((r) => r + 1)} />
-      <hr style={{ margin: '24px 0' }} />
+      <Divider sx={{ my: 3 }} />
       <Cases refreshKey={refresh} />
-    </main>
+    </Container>
   )
 }

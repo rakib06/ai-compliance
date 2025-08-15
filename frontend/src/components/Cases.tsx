@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 
 type CaseRow = {
   case_id: number
@@ -21,7 +22,9 @@ export default function Cases({ refreshKey }: { refreshKey: number }) {
     setRows(js.cases || [])
   }
 
-  useEffect(() => { fetchCases() }, [refreshKey])
+  useEffect(() => {
+    fetchCases()
+  }, [refreshKey])
 
   const seedTx = async () => {
     await fetch('/api/transactions/ingest', {
@@ -37,39 +40,43 @@ export default function Cases({ refreshKey }: { refreshKey: number }) {
   }
 
   return (
-    <section>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <h2 style={{ margin: 0 }}>Flagged Cases</h2>
-        <button onClick={fetchCases}>Refresh</button>
-        <button onClick={seedTx}>Seed Sample Transactions</button>
-      </div>
-      <table style={{ width: '100%', marginTop: 12, borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd' }}>Case</th>
-            <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd' }}>Tx</th>
-            <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd' }}>Customer</th>
-            <th style={{ textAlign: 'right', borderBottom: '1px solid #ddd' }}>Amount</th>
-            <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd' }}>Country</th>
-            <th style={{ textAlign: 'left', borderBottom: '1px solid #ddd' }}>Reason</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map(r => (
-            <tr key={r.case_id}>
-              <td>#{r.case_id}</td>
-              <td>#{r.tx_id}</td>
-              <td>{r.customer_id}</td>
-              <td style={{ textAlign: 'right' }}>{r.amount.toLocaleString()} {r.currency}</td>
-              <td>{r.country}</td>
-              <td>{r.reason}</td>
-            </tr>
+    <Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Typography variant="h5" sx={{ flexGrow: 1 }}>Flagged Cases</Typography>
+        <Button onClick={fetchCases} variant="outlined">Refresh</Button>
+        <Button onClick={seedTx} variant="outlined">Seed Sample Transactions</Button>
+      </Box>
+      <Table sx={{ mt: 2 }}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Case</TableCell>
+            <TableCell>Tx</TableCell>
+            <TableCell>Customer</TableCell>
+            <TableCell align="right">Amount</TableCell>
+            <TableCell>Country</TableCell>
+            <TableCell>Reason</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((r) => (
+            <TableRow key={r.case_id}>
+              <TableCell>#{r.case_id}</TableCell>
+              <TableCell>#{r.tx_id}</TableCell>
+              <TableCell>{r.customer_id}</TableCell>
+              <TableCell align="right">{r.amount.toLocaleString()} {r.currency}</TableCell>
+              <TableCell>{r.country}</TableCell>
+              <TableCell>{r.reason}</TableCell>
+            </TableRow>
           ))}
           {rows.length === 0 && (
-            <tr><td colSpan={6} style={{ padding: 12, opacity: 0.7 }}>No cases yet. Seed transactions and run the Airflow DAG.</td></tr>
+            <TableRow>
+              <TableCell colSpan={6} sx={{ p: 2, opacity: 0.7 }}>
+                No cases yet. Seed transactions and run the Airflow DAG.
+              </TableCell>
+            </TableRow>
           )}
-        </tbody>
-      </table>
-    </section>
+        </TableBody>
+      </Table>
+    </Box>
   )
 }
